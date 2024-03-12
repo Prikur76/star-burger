@@ -107,6 +107,7 @@ class ProductAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     pass
 
+
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
@@ -135,4 +136,7 @@ class OrderAdmin(admin.ModelAdmin):
         'firstname',
         'lastname',
         'address',
+    ]
+    readonly_fields = [
+        'created_at',
     ]

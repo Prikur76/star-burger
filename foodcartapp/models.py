@@ -170,7 +170,7 @@ class OrderItem(models.Model):
         related_name='items',
         verbose_name='заказ',
     )
-    products = models.ForeignKey(
+    product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='items',
