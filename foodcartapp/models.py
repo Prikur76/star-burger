@@ -126,12 +126,12 @@ class RestaurantMenuItem(models.Model):
 
 
 class Order(models.Model):
-    first_name = models.CharField(
+    firstname = models.CharField(
         'имя',
         max_length=50,
         db_index=True
     )
-    last_name = models.CharField(
+    lastname = models.CharField(
         'фамилия',
         max_length=50,
         db_index=True
