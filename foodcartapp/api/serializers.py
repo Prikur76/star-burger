@@ -1,31 +1,29 @@
 from rest_framework import serializers
 
-from .models import Product, ProductCategory, Order, OrderItem
-
-
-class ProductCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductCategory
-        fields = ['name']
+from foodcartapp.models import Product, ProductCategory, Order, OrderItem
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    category = ProductCategorySerializer(many=False, read_only=True)
     class Meta:
         model = Product
         fields = ['name', 'category', 'image', 'special_status', 'description', 'price']
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class ProductCategorySerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True, read_only=True)
     class Meta:
-        model = Order
-        fields = ['firstname', 'lastname', 'phonenumber', 'address']
+        model = ProductCategory
+        fields = ['name']
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    order = OrderSerializer(many=False, read_only=True)
-    products = ProductSerializer(many=True)
     class Meta:
         model = OrderItem
-        fields = ['order', 'products', 'quantity']
+        fields = ['order', 'product', 'quantity']
 
+
+class OrderSerializer(serializers.ModelSerializer):
+    products = OrderItemSerializer(many=True, read_only=True)
+    class Meta:
+        model = Order
+        fields = ['firstname', 'lastname', 'phonenumber', 'address']
