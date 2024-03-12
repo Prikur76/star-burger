@@ -1,0 +1,56 @@
+[
+  {
+    "model": "foodcartapp.restaurantmenuitem",
+    "pk": 1,
+    "fields": {
+      "restaurant": 1,
+      "product": 1,
+      "availability": true
+    }
+  },
+  {
+    "model": "foodcartapp.restaurantmenuitem",
+    "pk": 2,
+    "fields": {
+      "restaurant": 1,
+      "product": 2,
+      "availability": true
+    }
+  },
+  {
+    "model": "foodcartapp.restaurantmenuitem",
+    "pk": 3,
+    "fields": {
+      "restaurant": 2,
+      "product": 3,
+      "availability": true
+    }
+  },
+  {
+    "model": "foodcartapp.restaurantmenuitem",
+    "pk": 4,
+    "fields": {
+      "restaurant": 2,
+      "product": 4,
+      "availability": true
+    }
+  },
+  {
+    "model": "foodcartapp.restaurantmenuitem",
+    "pk": 5,
+    "fields": {
+      "restaurant": 3,
+      "product": 5,
+      "availability": true
+    }
+  },
+  {
+    "model": "foodcartapp.restaurantmenuitem",
+    "pk": 6,
+    "fields": {
+      "restaurant": 3,
+      "product": 6,
+      "availability": true
+    }
+  }
+]

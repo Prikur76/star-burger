@@ -1,0 +1,29 @@
+[
+  {
+    "model": "foodcartapp.restaurant",
+    "pk": 1,
+    "fields": {
+      "name": "Star Burger Арбат",
+      "address": "Москва, ул. Новый Арбат, 15",
+      "contact_phone": "+7 (967) 157-44-13"
+    }
+  },
+  {
+    "model": "foodcartapp.restaurant",
+    "pk": 2,
+    "fields": {
+      "name": "Star Burger Цветной",
+      "address": "Москва, Цветной бульвар, 11с2",
+      "contact_phone": "+7 (929) 949-55-36"
+    }
+  },
+  {
+    "model": "foodcartapp.restaurant",
+    "pk": 3,
+    "fields": {
+      "name": "Star Burger Европейский",
+      "address": "Москва, пл. Киевского Вокзала, 2",
+      "contact_phone": "+7 (929) 680-47-58"
+    }
+  }
+]

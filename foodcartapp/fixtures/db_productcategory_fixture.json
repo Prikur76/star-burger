@@ -1,0 +1,16 @@
+[
+  {
+    "model": "foodcartapp.productcategory",
+    "pk": 1,
+    "fields": {
+      "name": "Бургер"
+    }
+  },
+  {
+    "model": "foodcartapp.productcategory",
+    "pk": 2,
+    "fields": {
+      "name": "Ролл"
+    }
+  }
+]
