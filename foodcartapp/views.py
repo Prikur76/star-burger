@@ -6,10 +6,16 @@ from django.templatetags.static import static
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 
 from .models import Product, Order, OrderItem
+from .api.serializers import (
+    ProductSerializer,
+    OrderSerializer,
+    OrderItemSerializer
+)
 
-# @api_view(['POST'])
+
 def banners_list_api(request):
     # FIXME move data to db?
     return JsonResponse([
@@ -33,7 +39,8 @@ def banners_list_api(request):
         'indent': 4,
     })
 
-# @api_view(['POST'])
+
+@api_view(['GET', 'POST'])
 def product_list_api(request):
     products = Product.objects.select_related('category').available()
 
@@ -56,10 +63,13 @@ def product_list_api(request):
             }
         }
         dumped_products.append(dumped_product)
-    return JsonResponse(dumped_products, safe=False, json_dumps_params={
-        'ensure_ascii': False,
-        'indent': 4,
-    })
+    return Response(dumped_products)
+
+
+def validate_order(request):
+    pass
+
+
 
 @api_view(['POST'])
 def register_order(request):
@@ -137,9 +147,7 @@ def register_order(request):
             data={'error': 'wrong type of the address field'},
             status=400
         )
-
     # Products field
-
     if 'products' not in form_content:
         return Response(
                 data={'error': 'the products field is empty or not represented'},
