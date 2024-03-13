@@ -3,27 +3,33 @@ from rest_framework import serializers
 from foodcartapp.models import Product, ProductCategory, Order, OrderItem
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ['name', 'category', 'image', 'special_status', 'description', 'price']
-
-
 class ProductCategorySerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True, read_only=True)
     class Meta:
         model = ProductCategory
-        fields = ['name']
+        fields = ['id', 'name']
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    category = ProductCategorySerializer()
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'category', 'image', 'special_status', 'description', 'price']
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+
+    def validate_quantity(self, quantity):
+        if quantity <= 0:
+            raise serializers.ValidationError('Количество должно быть больше нуля')
+        return quantity
+
     class Meta:
         model = OrderItem
-        fields = ['order', 'product', 'quantity']
+        fields = ['product', 'quantity']
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    products = OrderItemSerializer(many=True, read_only=True)
+    products = OrderItemSerializer(many=True, allow_empty=False)
     class Meta:
         model = Order
-        fields = ['firstname', 'lastname', 'phonenumber', 'address']
+        fields = ['products', 'firstname', 'lastname', 'phonenumber', 'address']
