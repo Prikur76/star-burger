@@ -82,4 +82,8 @@ def register_order(request):
     products = [OrderItem(order=order, **fields) for fields in products_fields]
     OrderItem.objects.bulk_create(products)
 
-    return Response({'id': order.id})
+    return Response(
+        {
+            **{'id': order.id}, **OrderSerializer(order).data
+        }
+    )
