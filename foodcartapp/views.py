@@ -70,20 +70,5 @@ def product_list_api(request):
 def register_order(request):
     serializer = OrderSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-
-    order = Order.objects.create(
-        firstname=serializer.validated_data['firstname'],
-        lastname=serializer.validated_data['lastname'],
-        phonenumber=serializer.validated_data['phonenumber'],
-        address=serializer.validated_data['address']
-    )
-
-    products_fields = serializer.validated_data['products']
-    products = [OrderItem(order=order, **fields) for fields in products_fields]
-    OrderItem.objects.bulk_create(products)
-
-    return Response(
-        {
-            **{'id': order.id}, **OrderSerializer(order).data
-        }
-    )
+    order = serializer.save()
+    return Response(OrderSerializer(order).data)
