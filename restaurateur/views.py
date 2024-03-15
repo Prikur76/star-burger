@@ -10,6 +10,7 @@ from django.contrib.auth import views as auth_views
 
 
 from foodcartapp.models import Product, Restaurant, Order
+from foodcartapp.api.serializers import OrderViewSerializer
 
 
 class Login(forms.Form):
@@ -93,7 +94,11 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.is_active().total_cost()
+    orders = list(OrderViewSerializer(
+        Order.objects.is_active()
+        .total_cost()
+        .exclude(status='COMPLETED'),
+        many=True).data)
     return render(
         request,
         template_name='order_items.html',

@@ -30,7 +30,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    products = OrderItemSerializer(many=True, allow_empty=False, write_only=True)
+    products = OrderItemSerializer(many=True, allow_empty=False)
 
     def create(self, validated_data):
         products = validated_data.pop('products')
@@ -46,3 +46,24 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['products', 'firstname', 'lastname', 'phonenumber', 'address']
+
+
+class OrderViewSerializer(serializers.ModelSerializer):
+    cost = serializers.IntegerField(read_only=True)
+    order_status = serializers.CharField(source='get_status_display', read_only=True)
+
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'firstname',
+            'lastname',
+            'phonenumber',
+            'address',
+            'status',
+            'order_status',
+            'cost',
+            'created_at',
+            'is_active'
+        ]
+        read_only_fields = ['status']
