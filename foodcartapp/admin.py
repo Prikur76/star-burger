@@ -1,7 +1,11 @@
 from django.contrib import admin
 from django.shortcuts import reverse
+from django.shortcuts import redirect
 from django.templatetags.static import static
 from django.utils.html import format_html
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.encoding import iri_to_uri
+from django.http import HttpResponseRedirect
 
 from .models import Product
 from .models import ProductCategory
@@ -147,9 +151,16 @@ class OrderAdmin(admin.ModelAdmin):
         'lastname',
         'address',
     ]
-    readonly_fields = [
-        'created_at',
-    ]
+    readonly_fields = ['created_at', ]
+
+    def response_post_save_change(self, request, obj):
+        response = super().response_post_save_change(request, obj)
+        next_url = request.GET.get('next', None)
+        if next_url and url_has_allowed_host_and_scheme(request.GET['next'], None):
+            return HttpResponseRedirect(iri_to_uri(request.GET['next']))
+        return response
+
+
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     pass
