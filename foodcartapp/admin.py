@@ -140,3 +140,10 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = [
         'created_at',
     ]
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.price = instance.product.price
+            instance.save()
+        formset.save()
