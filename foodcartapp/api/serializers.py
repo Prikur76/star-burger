@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db import transaction
 
 from foodcartapp.models import Product, ProductCategory, Order, OrderItem
 
@@ -30,6 +31,18 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     products = OrderItemSerializer(many=True, allow_empty=False, write_only=True)
+
+    def create(self, validated_data):
+        products = validated_data.pop('products')
+        with transaction.atomic():
+            order = Order.objects.create(**validated_data)
+            needed_products = [product['product'] for product in products]
+            order_products = [OrderItem(order=order, **product) for product in products]
+            for num, order_product in enumerate(order_products):
+                order_product.price = needed_products[num].price
+            OrderItem.objects.bulk_create(order_products)
+            return order
+
     class Meta:
         model = Order
         fields = ['products', 'firstname', 'lastname', 'phonenumber', 'address']
