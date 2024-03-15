@@ -64,7 +64,8 @@ class OrderViewSerializer(serializers.ModelSerializer):
             'order_status',
             'cost',
             'comment',
-            'created_at',
-            'is_active'
+            'registered_at',
+            'called_at',
+            'delivered_at',
         ]
         read_only_fields = ['status']

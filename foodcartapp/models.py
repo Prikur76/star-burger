@@ -126,11 +126,6 @@ class RestaurantMenuItem(models.Model):
 
 
 class OrderQuerySet(models.QuerySet):
-    def is_active(self):
-        return self.filter(is_active=True)
-
-    def not_active(self):
-        return self.filter(is_active=False)
 
     def total_cost(self):
         return self.prefetch_related(
@@ -181,17 +176,20 @@ class Order(models.Model):
         'комментарий',
         blank=True
     )
-    created_at = models.DateTimeField(
+    registered_at = models.DateTimeField(
         'создан',
-        auto_now_add=True
+        auto_now_add=True,
+        db_index=True
     )
-    updated_at = models.DateTimeField(
-        'изменен',
-        auto_now=True
+    called_at = models.DateTimeField(
+        'звонок',
+        blank=True,
+        null=True
     )
-    is_active = models.BooleanField(
-        'активен',
-        default=True
+    delivered_at = models.DateTimeField(
+        'доставлен',
+        blank=True,
+        null=True
     )
 
     objects = OrderQuerySet.as_manager()
