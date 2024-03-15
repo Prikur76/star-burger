@@ -63,6 +63,7 @@ class OrderViewSerializer(serializers.ModelSerializer):
             'status',
             'order_status',
             'cost',
+            'comment',
             'created_at',
             'is_active'
         ]

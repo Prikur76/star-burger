@@ -177,6 +177,10 @@ class Order(models.Model):
         default='CREATED',
         db_index=True
     )
+    comment = models.TextField(
+        'комментарий',
+        blank=True
+    )
     created_at = models.DateTimeField(
         'создан',
         auto_now_add=True
