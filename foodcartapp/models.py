@@ -133,7 +133,7 @@ class OrderQuerySet(models.QuerySet):
         return self.filter(is_active=False)
 
     def total_cost(self):
-        return self.annotate(cost=Sum(F('products__quantity') * F('products__product__price')))
+        return self.prefetch_related('products').annotate(cost=Sum(F('products__quantity') * F('products__product__price')))
 
 class Order(models.Model):
     firstname = models.CharField(
@@ -194,6 +194,12 @@ class OrderItem(models.Model):
     )
     quantity = models.PositiveIntegerField(
         'количество',
+        validators=[MinValueValidator(0)]
+    )
+    price = models.DecimalField(
+        'цена',
+        max_digits=8,
+        decimal_places=2,
         validators=[MinValueValidator(0)]
     )
 
