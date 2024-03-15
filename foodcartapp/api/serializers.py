@@ -51,6 +51,7 @@ class OrderSerializer(serializers.ModelSerializer):
 class OrderViewSerializer(serializers.ModelSerializer):
     cost = serializers.IntegerField(read_only=True)
     order_status = serializers.CharField(source='get_status_display', read_only=True)
+    payment_method_name = serializers.CharField(source='get_payment_method_display', read_only=True)
 
     class Meta:
         model = Order
@@ -62,6 +63,8 @@ class OrderViewSerializer(serializers.ModelSerializer):
             'address',
             'status',
             'order_status',
+            'payment_method',
+            'payment_method_name',
             'cost',
             'comment',
             'registered_at',

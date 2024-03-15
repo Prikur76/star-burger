@@ -138,11 +138,15 @@ class OrderQuerySet(models.QuerySet):
         )
 
 class Order(models.Model):
-    choices = [
+    STATUSES = [
         ('CREATED', 'создан'),
         ('IN_PROGRESS', 'в обработке'),
         ('IN_DELIVERY', 'доставляется'),
         ('COMPLETED', 'завершен'),
+    ]
+    PAYMENT_METHODS = [
+        ('CASH', 'наличные'),
+        ('CARD', 'карта')
     ]
 
     firstname = models.CharField(
@@ -168,8 +172,15 @@ class Order(models.Model):
     status = models.CharField(
         'статус',
         max_length=20,
-        choices=choices,
+        choices=STATUSES,
         default='CREATED',
+        db_index=True
+    )
+    payment_method = models.CharField(
+        'способ оплаты',
+        max_length=20,
+        choices=PAYMENT_METHODS,
+        default='CASH',
         db_index=True
     )
     comment = models.TextField(

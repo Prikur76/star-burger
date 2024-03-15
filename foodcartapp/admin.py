@@ -139,6 +139,7 @@ class OrderAdmin(admin.ModelAdmin):
         'phonenumber',
         'address',
         'status',
+        'payment_method',
         'comment',
         'registered_at',
         'called_at',
@@ -153,6 +154,7 @@ class OrderAdmin(admin.ModelAdmin):
         'firstname',
         'lastname',
         'address',
+
     ]
     readonly_fields = ['registered_at']
 
