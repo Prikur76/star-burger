@@ -112,6 +112,16 @@ class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
 
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in formset.deleted_objects:
+            obj.delete()
+        for instance in instances:
+            product = Product.objects.get(id=instance.product.id)
+            instance.price = product.price
+            instance.save()
+        formset.save_m2m()
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -140,10 +150,6 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = [
         'created_at',
     ]
-
-    def save_formset(self, request, form, formset, change):
-        instances = formset.save(commit=False)
-        for instance in instances:
-            instance.price = instance.product.price
-            instance.save()
-        formset.save()
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    pass
