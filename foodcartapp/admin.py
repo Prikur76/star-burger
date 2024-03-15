@@ -138,6 +138,7 @@ class OrderAdmin(admin.ModelAdmin):
         'lastname',
         'phonenumber',
         'address',
+        'status',
         'created_at',
         'is_active',
     ]
@@ -151,7 +152,7 @@ class OrderAdmin(admin.ModelAdmin):
         'lastname',
         'address',
     ]
-    readonly_fields = ['created_at', ]
+    readonly_fields = ['created_at', 'updated_at']
 
     def response_post_save_change(self, request, obj):
         response = super().response_post_save_change(request, obj)

@@ -143,6 +143,13 @@ class OrderQuerySet(models.QuerySet):
         )
 
 class Order(models.Model):
+    choices = [
+        ('CREATED', 'создан'),
+        ('IN_PROGRESS', 'в обработке'),
+        ('IN_DELIVERY', 'доставляется'),
+        ('COMPLETED', 'завершен'),
+    ]
+
     firstname = models.CharField(
         'имя',
         max_length=50,
@@ -163,9 +170,20 @@ class Order(models.Model):
         max_length=150,
         db_index=True
     )
+    status = models.CharField(
+        'статус',
+        max_length=20,
+        choices=choices,
+        default='CREATED',
+        db_index=True
+    )
     created_at = models.DateTimeField(
         'создан',
         auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        'изменен',
+        auto_now=True
     )
     is_active = models.BooleanField(
         'активен',
