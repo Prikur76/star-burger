@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Prefetch
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -133,7 +133,14 @@ class OrderQuerySet(models.QuerySet):
         return self.filter(is_active=False)
 
     def total_cost(self):
-        return self.prefetch_related('products').annotate(cost=Sum(F('products__quantity') * F('products__product__price')))
+        return self.prefetch_related(
+            Prefetch(
+                'products',
+                queryset=OrderItem.objects.select_related('product')
+            )
+        ).annotate(
+            cost=Sum(F('products__quantity') * F('products__product__price'))
+        )
 
 class Order(models.Model):
     firstname = models.CharField(
@@ -173,10 +180,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{self.firstname} {self.lastname} - {self.address}"
-
-    @property
-    def full_name(self):
-        return f"{self.firstname} {self.lastname}"
 
 
 class OrderItem(models.Model):
