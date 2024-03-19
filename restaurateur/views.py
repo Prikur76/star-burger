@@ -99,6 +99,7 @@ def view_orders(request):
             Order.objects.total_cost().exclude(status='COMPLETED'),
             many=True
         ).data)
+
     return render(
         request,
         template_name='order_items.html',

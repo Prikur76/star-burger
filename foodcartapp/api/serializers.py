@@ -1,7 +1,13 @@
 from rest_framework import serializers
 from django.db import transaction
 
-from foodcartapp.models import Product, ProductCategory, Order, OrderItem
+from foodcartapp.models import Product, ProductCategory, Order, OrderItem, Restaurant
+
+
+class RestaurantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = ['name', 'address', 'contact_phone']
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
@@ -52,6 +58,8 @@ class OrderViewSerializer(serializers.ModelSerializer):
     cost = serializers.IntegerField(read_only=True)
     order_status = serializers.CharField(source='get_status_display', read_only=True)
     payment_method_name = serializers.CharField(source='get_payment_method_display', read_only=True)
+    available_restaurants = RestaurantSerializer(source='get_available_restaurants', many=True, read_only=True)
+    linked_restaurant =  RestaurantSerializer(source='restaurant', read_only=True)
 
     class Meta:
         model = Order
@@ -67,6 +75,8 @@ class OrderViewSerializer(serializers.ModelSerializer):
             'payment_method_name',
             'cost',
             'comment',
+            'available_restaurants',
+            'linked_restaurant',
             'registered_at',
             'called_at',
             'delivered_at',

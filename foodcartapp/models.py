@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import F, Sum, Prefetch
+from django.db.models import F, Count,Sum, Prefetch
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -140,7 +140,7 @@ class OrderQuerySet(models.QuerySet):
 class Order(models.Model):
     STATUSES = [
         ('CREATED', 'создан'),
-        ('IN_PROGRESS', 'в обработке'),
+        ('IN_PROGRESS', 'готовится'),
         ('IN_DELIVERY', 'доставляется'),
         ('COMPLETED', 'завершен'),
     ]
@@ -187,6 +187,14 @@ class Order(models.Model):
         'комментарий',
         blank=True
     )
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.PROTECT,
+        related_name='orders',
+        verbose_name='ресторан',
+        null=True,
+        blank=True
+    )
     registered_at = models.DateTimeField(
         'создан',
         auto_now_add=True,
@@ -211,6 +219,19 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id}: {self.firstname} {self.lastname} - {self.address}"
+
+    def get_available_restaurants(self):
+        available_restaurants = None
+        if not self.restaurant:
+            available_restaurants = Restaurant.objects.filter(
+                menu_items__product__in=self.products.values_list('product', flat=True),
+                menu_items__availability=True
+            ).annotate(
+                availability_count=Count('menu_items__product')
+            ).filter(
+                availability_count__gt=0
+            ).distinct()
+        return available_restaurants
 
 
 class OrderItem(models.Model):

@@ -21,19 +21,43 @@
       <th>Телефон</th>
       <th>Адрес доставки</th>
       <th>Комментарий</th>
+      <th>Ресторан</th>
       <th>Ссылка на админку</th>
     </tr>
 
     {% for item in order_items %}
       <tr>
         <td>{{ item.id }}</td>
-        <td>{{ item.order_status }}</td>
+        <td><strong>{{ item.order_status }}</strong></td>
         <td>{{ item.payment_method_name }}</td>
         <td>{{ item.cost }} руб.</td>
         <td>{{ item.firstname }} {{ item.lastname }}</td>
         <td>{{ item.phonenumber }}</td>
         <td>{{ item.address }}</td>
         <td>{{ item.comment }}</td>
+        {% if item.linked_restaurant and item.order_status == 'готовится' %}
+          <td>
+            <details>
+              <summary>
+                <strong>Готовит:</strong>
+              </summary>
+              <p>{{ item.linked_restaurant.name }}</p>
+            </details>
+          </td>
+        {% else %}
+          <td>
+            <details>
+              <summary>
+                <strong>Доступно:</strong>
+              </summary>
+              <ol>
+                {% for restaurant in item.available_restaurants %}
+                  <li>{{ restaurant.name }}</li>
+                {% endfor %}
+              </ol>
+            </details>
+          </td>
+        {% endif %}
         <td><a href="{% url 'admin:foodcartapp_order_change' item.id %}?next={{ current_url|urlencode }}">Редактировать</a></td>
       </tr>
     {% endfor %}
