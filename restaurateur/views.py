@@ -4,6 +4,7 @@ from django.views import View
 from django.urls import reverse_lazy
 from django.db.models import F, Sum
 from django.contrib.auth.decorators import user_passes_test
+from geopy import distance
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
@@ -100,6 +101,19 @@ def view_orders(request):
             many=True
         ).data)
 
+    for order in orders:
+        if order['available_restaurants']:
+            order_latitude = order['available_restaurants'][0]['latitude']
+            order_longitude = order['available_restaurants'][0]['longitude']
+            restaurant_latitude = linked_restaurant.get('latitude', False)
+            restaurant_longitude = linked_restaurant.get('longitude', False)
+            linked_restaurant['distance'] = None
+            if order_longitude and order_latitude and restaurant_latitude and restaurant_longitude:
+                linked_restaurant['distance'] = distance.distance(
+                    (order_latitude, order_longitude),
+                    (restaurant_latitude, restaurant_longitude)
+                    ).km
+            order['available_restaurants'] = sorted(order['available_restaurants'], key=lambda x: x['distance'])
     return render(
         request,
         template_name='order_items.html',

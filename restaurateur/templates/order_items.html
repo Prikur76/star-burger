@@ -52,7 +52,11 @@
               </summary>
               <ol>
                 {% for restaurant in item.available_restaurants %}
-                  <li>{{ restaurant.name }}</li>
+                  {% if restaurant.distance %}
+                    <li>{{ restaurant.name }} - {{ restaurant.distance|floatformat:1 }} км.</li>
+                  {% else %}
+                    <li>{{ restaurant.name }} - <span style="color: red">ошибка определения координат</span></li>
+                  {% endif %}
                 {% endfor %}
               </ol>
             </details>
