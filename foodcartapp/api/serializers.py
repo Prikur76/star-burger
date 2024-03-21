@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from django.db import transaction
+from rest_framework import serializers
 
 from foodcartapp.models import Product, ProductCategory, Order, OrderItem, Restaurant
 

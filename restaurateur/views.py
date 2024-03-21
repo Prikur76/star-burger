@@ -1,17 +1,15 @@
 from django import forms
-from django.shortcuts import redirect, render
-from django.views import View
-from django.urls import reverse_lazy
-from django.db.models import F, Sum
-from django.contrib.auth.decorators import user_passes_test
-from geopy import distance
-
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.views import View
 
-
-from foodcartapp.models import Product, Restaurant, Order
+from foodcartapp.api.geocoder import get_distance_km
 from foodcartapp.api.serializers import OrderViewSerializer
+from foodcartapp.models import Product, Restaurant, Order
+from star_burger.settings import YANDEX_API_KEY
 
 
 class Login(forms.Form):
@@ -100,25 +98,13 @@ def view_orders(request):
             Order.objects.total_cost().exclude(status='COMPLETED'),
             many=True
         ).data)
+    orders_with_distance = get_distance_km(YANDEX_API_KEY, orders)
 
-    for order in orders:
-        if order['available_restaurants']:
-            order_latitude = order['available_restaurants'][0]['latitude']
-            order_longitude = order['available_restaurants'][0]['longitude']
-            restaurant_latitude = linked_restaurant.get('latitude', False)
-            restaurant_longitude = linked_restaurant.get('longitude', False)
-            linked_restaurant['distance'] = None
-            if order_longitude and order_latitude and restaurant_latitude and restaurant_longitude:
-                linked_restaurant['distance'] = distance.distance(
-                    (order_latitude, order_longitude),
-                    (restaurant_latitude, restaurant_longitude)
-                    ).km
-            order['available_restaurants'] = sorted(order['available_restaurants'], key=lambda x: x['distance'])
     return render(
         request,
         template_name='order_items.html',
         context={
-            'order_items': orders,
+            'order_items': orders_with_distance,
             'current_url': request.path
         }
     )
