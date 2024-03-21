@@ -137,6 +137,7 @@ class OrderQuerySet(models.QuerySet):
             cost=Sum(F('products__quantity') * F('products__product__price'))
         )
 
+
 class Order(models.Model):
     STATUSES = [
         ('CREATED', 'создан'),

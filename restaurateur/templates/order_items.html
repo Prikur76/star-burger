@@ -55,7 +55,7 @@
                   {% if restaurant.distance %}
                     <li>{{ restaurant.name }} - {{ restaurant.distance|floatformat:1 }} км.</li>
                   {% else %}
-                    <li>{{ restaurant.name }} - <span style="color: red">ошибка определения координат</span></li>
+                    <li>{{ restaurant.name }} - <span style="color: red">расстояние не определено</span></li>
                   {% endif %}
                 {% endfor %}
               </ol>
