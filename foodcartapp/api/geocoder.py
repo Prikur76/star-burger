@@ -23,18 +23,14 @@ def fetch_coordinates(apikey, address):
     return lon, lat
 
 
-def get_distance_km(apikey, orders):
+def get_distance_km(apikey, order):
     """
     Returns distance between order and restaurants
     """
-    for order in orders:
+    if order.get('available_restaurants'):
         order_lon, order_lat = fetch_coordinates(apikey, order.get('address'))
-        if not order.get('available_restaurants'):
-            return orders
         for restaurant in order.get('available_restaurants'):
-            if restaurant.get('address'):
-                restaurant_lon, restaurant_lat = fetch_coordinates(apikey, restaurant.get('address'))
-            if order_lat and order_lon and restaurant_lat and restaurant_lon:
-                restaurant['distance'] = round(distance((order_lat, order_lon), (restaurant_lat, restaurant_lon)).km,2)
+            restaurant_lon, restaurant_lat = fetch_coordinates(apikey, restaurant.get('address'))
+            restaurant['distance'] = round(distance((order_lat, order_lon), (restaurant_lat, restaurant_lon)).km, 2)
         order['available_restaurants'] = sorted(order.get('available_restaurants'), key=lambda x: x['distance'])
-    return orders
+    return order

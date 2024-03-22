@@ -98,13 +98,13 @@ def view_orders(request):
             Order.objects.total_cost().exclude(status='COMPLETED'),
             many=True
         ).data)
-    orders_with_distance = get_distance_km(YANDEX_API_KEY, orders)
-
+    for order in orders:
+        order = get_distance_km(YANDEX_API_KEY, order)
     return render(
         request,
         template_name='order_items.html',
         context={
-            'order_items': orders_with_distance,
+            'order_items': orders,
             'current_url': request.path
         }
     )
