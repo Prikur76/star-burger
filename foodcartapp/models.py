@@ -230,7 +230,7 @@ class Order(models.Model):
             ).annotate(
                 availability_count=Count('menu_items__product')
             ).filter(
-                availability_count__gt=0
+                availability_count=self.products.count()
             ).distinct()
         return available_restaurants
 

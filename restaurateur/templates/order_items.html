@@ -44,18 +44,22 @@
               <p>{{ item.linked_restaurant.name }}</p>
             </details>
           </td>
+        {% elif not item.available_restaurants and not item.linked_restaurant %}
+          <td style="color: red">
+            <strong>Ресторан не найден</strong>
+          </td>
         {% else %}
           <td>
             <details>
               <summary>
-                <strong>Доступно:</strong>
+                <strong>Доступно в ресторанах:</strong>
               </summary>
               <ol>
                 {% for restaurant in item.available_restaurants %}
                   {% if restaurant.distance %}
                     <li>{{ restaurant.name }} - {{ restaurant.distance|floatformat:1 }} км.</li>
                   {% else %}
-                    <li>{{ restaurant.name }} - <span style="color: red">расстояние не определено</span></li>
+                    <li>{{ restaurant.name }} (<span style="color: red">ошибка определения координат</span>)</li>
                   {% endif %}
                 {% endfor %}
               </ol>
