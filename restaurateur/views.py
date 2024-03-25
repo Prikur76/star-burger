@@ -9,7 +9,6 @@ from django.views import View
 from foodcartapp.api.geocoder import get_distance_km
 from foodcartapp.api.serializers import OrderViewSerializer
 from foodcartapp.models import Product, Restaurant, Order
-from star_burger.settings import YANDEX_API_KEY
 
 
 class Login(forms.Form):
@@ -98,13 +97,12 @@ def view_orders(request):
             Order.objects.total_cost().exclude(status='COMPLETED'),
             many=True
         ).data)
-    for order in orders:
-        order = get_distance_km(YANDEX_API_KEY, order)
+    orders_with_distances = get_distance_km(orders)
     return render(
         request,
         template_name='order_items.html',
         context={
-            'order_items': orders,
+            'order_items': orders_with_distances,
             'current_url': request.path
         }
     )

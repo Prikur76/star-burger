@@ -1,7 +1,9 @@
 from django.db import transaction
 from rest_framework import serializers
 
+from addresses.models import Place
 from foodcartapp.models import Product, ProductCategory, Order, OrderItem, Restaurant
+from .geocoder import fetch_coordinates
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
@@ -40,13 +42,22 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         products = validated_data.pop('products')
-        with transaction.atomic():
+        with (transaction.atomic()):
             order = Order.objects.create(**validated_data)
             needed_products = [product['product'] for product in products]
             order_products = [OrderItem(order=order, **product) for product in products]
             for num, order_product in enumerate(order_products):
                 order_product.price = needed_products[num].price
             OrderItem.objects.bulk_create(order_products)
+            order_address = order.address
+            if not Place.objects.filter(address=order_address).exists():
+                order_coordinates = fetch_coordinates(order_address)
+                if not order_coordinates:
+                    order_place = Place.objects.create(address=order_address)
+                order_place = Place.objects.create(address=order_address,
+                                                   longitude=order_coordinates[1],
+                                                   latitude=order_coordinates[0])
+                order_place.save()
             return order
 
     class Meta:
