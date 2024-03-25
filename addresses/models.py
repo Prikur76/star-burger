@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Address(models.Model):
+class Place(models.Model):
     address = models.CharField(unique=True, max_length=255, verbose_name='aдрес')
     latitude = models.FloatField(verbose_name='широта', default=0.0)
     longitude = models.FloatField(verbose_name='долгота', default=0.0)
