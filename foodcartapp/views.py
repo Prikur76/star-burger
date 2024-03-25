@@ -1,19 +1,10 @@
-import json
-import re
-
 from django.http import JsonResponse
 from django.templatetags.static import static
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
 
-from .models import Product, Order, OrderItem
-from .api.serializers import (
-    ProductSerializer,
-    OrderSerializer,
-    OrderItemSerializer
-)
+from .api.serializers import OrderSerializer
+from .models import Product
 
 
 def banners_list_api(request):

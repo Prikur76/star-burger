@@ -5,4 +5,4 @@ from .models import Place
 class PlaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
-        fields = ['address', 'latitude', 'longitude']
+        fields = ["address", "latitude", "longitude"]
