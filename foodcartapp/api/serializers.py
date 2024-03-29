@@ -38,13 +38,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
 
-    def validate_quantity(self, quantity):
-        if quantity <= 0:
-            raise serializers.ValidationError(
-                "Количество должно быть больше нуля"
-            )
-        return quantity
-
     class Meta:
         model = OrderItem
         fields = ["product", "quantity"]

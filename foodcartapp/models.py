@@ -202,7 +202,7 @@ class OrderItem(models.Model):
         verbose_name="продукт",
     )
     quantity = models.PositiveIntegerField(
-        "количество", validators=[MinValueValidator(0)]
+        "количество", validators=[MinValueValidator(1)]
     )
     price = models.DecimalField(
         "цена",
