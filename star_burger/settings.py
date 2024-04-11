@@ -2,15 +2,16 @@ import os
 
 import dj_database_url
 
+from git import Repo
 from environs import Env
 
 
 env = Env()
 env.read_env()
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 
 SECRET_KEY = env.str('SECRET_KEY', 'REPLACE_ME')
 DEBUG = env.bool('DEBUG', False)
@@ -42,6 +43,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404',
 ]
 
 ROOT_URLCONF = 'star_burger.urls'
@@ -60,6 +62,17 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
+
+local_repo = Repo(path=BASE_DIR)
+local_branch = local_repo.active_branch.name
+
+ROLLBAR = {
+    'access_token': env.str('ROLLBAR_ACCESS_TOKEN'),
+    'environment': env.str('ROLLBAR_ENVIRONMENT', 'development'),
+    'code_version': '1.0.0',
+    'branch': local_branch,
+    'root': BASE_DIR,
+}
 
 TEMPLATES = [
     {

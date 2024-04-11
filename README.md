@@ -64,6 +64,13 @@ SECRET_KEY=django-insecure-0if40nf4nf93n4
 YANDEX_API_KEY=<Ваш API ключ>
 ```
 
+Зарегистрируйтесь в сервисе [Rollbar](https://rollbar.com/), зарегистрируйте проект по инструкции.
+Сохраните token проекта в переменную окружения `ROLLBAR_ACCESS_TOKEN`. Добавьте в файл `.env`:
+```sh
+ROLLBAR_ACCESS_TOKEN=<Ваш access token>
+ROLLBAR_ENVIRONMENT=<Ваше окружение>
+```
+
 Создайте файл базы данных SQLite и отмигрируйте её следующей командой:
 
 ```sh
